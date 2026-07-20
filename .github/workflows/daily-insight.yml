@@ -1,0 +1,30 @@
+name: Análisis financiero diario
+
+on:
+  schedule:
+    # 13:00 UTC = 7:00am hora de Ciudad de México (CST, UTC-6)
+    - cron: '0 13 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  daily-insight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm ci
+
+      - name: Escribir credenciales de la service account
+        run: echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-service-account.json
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Generar análisis del día
+        run: npm run daily-insight
+        env:
+          FIREBASE_SERVICE_ACCOUNT_PATH: /tmp/firebase-service-account.json
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
