@@ -10,3 +10,4 @@ firebase-service-account.json
 .DS_Store
 .claude/
 *.tsbuildinfo
+api claude.txt
