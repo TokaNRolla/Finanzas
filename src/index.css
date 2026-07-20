@@ -262,7 +262,7 @@ input, select {
   font-size: 1rem;
 }
 
-button[type='submit'] {
+.primary-button {
   background: var(--accent);
   color: #0f172a;
   border: none;
@@ -272,7 +272,7 @@ button[type='submit'] {
   font-size: 1rem;
 }
 
-button[type='submit']:disabled {
+.primary-button:disabled {
   opacity: 0.6;
 }
 

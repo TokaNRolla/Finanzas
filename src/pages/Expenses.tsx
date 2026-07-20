@@ -86,7 +86,7 @@ export default function Expenses() {
           Categoría (opcional)
           <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Ej. Comida" />
         </label>
-        <button type="submit" disabled={submitting}>
+        <button type="submit" className="primary-button" disabled={submitting}>
           {submitting ? 'Guardando…' : 'Agregar gasto'}
         </button>
       </form>
