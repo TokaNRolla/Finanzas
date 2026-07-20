@@ -294,19 +294,6 @@ input, select {
   margin: 0 0 8px;
 }
 
-.login-divider {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.8rem;
-  margin: 4px 0;
-}
-
-.login-email-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .secondary-button {
   background: var(--surface-2);
   color: var(--text);
