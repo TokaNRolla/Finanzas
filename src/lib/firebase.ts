@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { browserLocalPersistence, browserPopupRedirectResolver, initializeAuth } from 'firebase/auth'
+import { browserLocalPersistence, initializeAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -14,8 +14,9 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig)
 // Se usa localStorage en vez de IndexedDB: en algunos navegadores Android la
 // persistencia por IndexedDB de Firebase Auth se queda colgada sin avisar.
-export const auth = initializeAuth(app, {
-  persistence: browserLocalPersistence,
-  popupRedirectResolver: browserPopupRedirectResolver,
-})
+// Nota: no se pasa popupRedirectResolver aquí a propósito — cargar ese
+// resolver de forma anticipada (con el iframe de auth) es lo que dejaba
+// la app entera trabada en "Cargando". Se pasa solo al momento de iniciar
+// sesión (ver AuthContext.tsx), para que quede aislado a ese botón.
+export const auth = initializeAuth(app, { persistence: browserLocalPersistence })
 export const db = getFirestore(app)

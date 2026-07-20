@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import {
   GoogleAuthProvider,
-  getRedirectResult,
+  browserPopupRedirectResolver,
   onAuthStateChanged,
-  signInWithRedirect,
+  signInWithPopup,
   signOut,
   type User,
 } from 'firebase/auth'
@@ -47,50 +47,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
     }, 8000)
 
-    let unsub = () => {}
-    try {
-      unsub = onAuthStateChanged(
-        auth,
-        async (u) => {
-          log(`onAuthStateChanged: usuario=${u ? u.email : 'null'}`)
-          try {
-            if (u && ALLOWED_EMAIL && u.email !== ALLOWED_EMAIL) {
-              setError('Esta cuenta de Google no tiene acceso a esta app.')
-              await signOut(auth)
-              setUser(null)
-            } else {
-              setUser(u)
-            }
-          } catch (err) {
-            log(`error procesando usuario: ${String(err)}`)
-            setError('Ocurrió un error validando tu sesión.')
-          } finally {
-            clearTimeout(safetyTimeout)
-            setLoading(false)
+    const unsub = onAuthStateChanged(
+      auth,
+      async (u) => {
+        log(`onAuthStateChanged: usuario=${u ? u.email : 'null'}`)
+        try {
+          if (u && ALLOWED_EMAIL && u.email !== ALLOWED_EMAIL) {
+            setError('Esta cuenta de Google no tiene acceso a esta app.')
+            await signOut(auth)
+            setUser(null)
+          } else {
+            setUser(u)
           }
-        },
-        (err) => {
-          log(`onAuthStateChanged error: ${String(err)}`)
-          setError('Error de Firebase Auth: ' + String(err))
+        } catch (err) {
+          log(`error procesando usuario: ${String(err)}`)
+          setError('Ocurrió un error validando tu sesión.')
+        } finally {
           clearTimeout(safetyTimeout)
           setLoading(false)
-        },
-      )
-    } catch (err) {
-      log(`excepción al registrar onAuthStateChanged: ${String(err)}`)
-      setError('No se pudo inicializar la autenticación.')
-      clearTimeout(safetyTimeout)
-      setLoading(false)
-    }
-
-    getRedirectResult(auth)
-      .then((result) => {
-        log(`getRedirectResult: ${result ? 'usuario ' + result.user.email : 'sin resultado pendiente'}`)
-      })
-      .catch((err) => {
-        log(`getRedirectResult error: ${String(err)}`)
-        setError('No se pudo iniciar sesión con Google: ' + String(err?.code || err))
-      })
+        }
+      },
+      (err) => {
+        log(`onAuthStateChanged error: ${String(err)}`)
+        setError('Error de Firebase Auth: ' + String(err))
+        clearTimeout(safetyTimeout)
+        setLoading(false)
+      },
+    )
 
     return () => {
       clearTimeout(safetyTimeout)
@@ -100,7 +83,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginWithGoogle = async () => {
     setError(null)
-    await signInWithRedirect(auth, new GoogleAuthProvider())
+    log('abriendo popup de Google...')
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider(), browserPopupRedirectResolver)
+      log('popup: sesión iniciada')
+    } catch (err) {
+      log(`popup error: ${String(err)}`)
+      setError('No se pudo iniciar sesión con Google: ' + String((err as { code?: string })?.code || err))
+    }
   }
 
   const logout = async () => {
