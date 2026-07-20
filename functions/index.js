@@ -53,7 +53,10 @@ ${JSON.stringify(context.expenses, null, 2)}
 Responde en español, de forma directa y práctica, como un asesor financiero de confianza que conoce a detalle su situación. Si pregunta algo que no tiene que ver con sus finanzas, respóndele con normalidad de todas formas.`
 }
 
-export const askAdvisor = onCall({ secrets: [anthropicApiKey] }, async (request) => {
+// invoker: 'public' es necesario para que el SDK del cliente pueda siquiera
+// llamar a la función — la seguridad real la sigue dando el chequeo de
+// request.auth de abajo, no este ajuste.
+export const askAdvisor = onCall({ secrets: [anthropicApiKey], invoker: 'public' }, async (request) => {
   if (!request.auth) {
     throw new HttpsError('unauthenticated', 'Debes iniciar sesión.')
   }
