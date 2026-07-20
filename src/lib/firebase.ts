@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { browserLocalPersistence, initializeAuth } from 'firebase/auth'
+import { browserLocalPersistence, browserPopupRedirectResolver, initializeAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -14,5 +14,8 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig)
 // Se usa localStorage en vez de IndexedDB: en algunos navegadores Android la
 // persistencia por IndexedDB de Firebase Auth se queda colgada sin avisar.
-export const auth = initializeAuth(app, { persistence: browserLocalPersistence })
+export const auth = initializeAuth(app, {
+  persistence: browserLocalPersistence,
+  popupRedirectResolver: browserPopupRedirectResolver,
+})
 export const db = getFirestore(app)
