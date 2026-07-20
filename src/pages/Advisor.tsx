@@ -33,8 +33,10 @@ export default function Advisor() {
     try {
       const result = await askAdvisor({ question: trimmed, history })
       setMessages([...nextMessages, { role: 'assistant', content: result.data.answer }])
-    } catch {
-      setError('No se pudo contactar al asesor. Intenta de nuevo.')
+    } catch (err) {
+      const code = (err as { code?: string })?.code
+      const message = (err as { message?: string })?.message
+      setError(`No se pudo contactar al asesor (${code || 'error'}): ${message || String(err)}`)
     } finally {
       setSending(false)
     }
