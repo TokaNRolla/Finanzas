@@ -37,7 +37,7 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Deploy a Firebase Hosting + reglas de Firestore + Functions
-        run: npx firebase-tools deploy --only hosting,firestore:rules,functions --project "$FIREBASE_PROJECT_ID" --non-interactive
+        run: npx firebase-tools deploy --only hosting,firestore:rules,functions --project "$FIREBASE_PROJECT_ID" --non-interactive --force
         env:
           FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-service-account.json
