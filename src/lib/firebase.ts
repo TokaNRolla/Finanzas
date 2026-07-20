@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { browserLocalPersistence, initializeAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getFunctions } from 'firebase/functions'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -20,3 +21,4 @@ export const app = initializeApp(firebaseConfig)
 // sesión (ver AuthContext.tsx), para que quede aislado a ese botón.
 export const auth = initializeAuth(app, { persistence: browserLocalPersistence })
 export const db = getFirestore(app)
+export const functions = getFunctions(app)

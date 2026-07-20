@@ -7,6 +7,7 @@ const tabs = [
   { to: '/gastos', label: 'Gastos', icon: '🧾' },
   { to: '/pagos-fijos', label: 'Fijos', icon: '📌' },
   { to: '/insights', label: 'Análisis', icon: '🧠' },
+  { to: '/asesor', label: 'Asesor', icon: '💬' },
 ]
 
 export default function NavBar() {

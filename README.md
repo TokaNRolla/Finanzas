@@ -5,8 +5,9 @@ App web (PWA) para consultar tarjetas, ingresos, pagos fijos y gastos desde el c
 ## Stack
 
 - React + Vite + TypeScript, instalable en el celular (Add to Home Screen).
-- Firebase Auth + Firestore (plan gratuito Spark) como base de datos.
+- Firebase Auth + Firestore + Cloud Functions (plan Blaze, pago por uso) como base de datos y backend.
 - GitHub Actions: despliega a Firebase Hosting en cada push a `main`, y corre un análisis diario con la API de Claude que se guarda en Firestore.
+- Pestaña "Asesor": chat en tiempo real con Claude (vía una Cloud Function) que responde preguntas usando tus datos financieros actuales.
 
 ## Puesta en marcha (una sola vez)
 
@@ -27,9 +28,25 @@ App web (PWA) para consultar tarjetas, ingresos, pagos fijos y gastos desde el c
    ```
    Revisa los valores en `scripts/seed.mjs` antes de correrlo — puedes editarlos si algo no coincide con tu Sheet.
 
-4. **Crear una API key de Anthropic** en https://console.anthropic.com para el análisis diario.
+4. **Crear una API key de Anthropic** en https://console.anthropic.com para el análisis diario y el asesor.
 
-5. **Conectar el repo de GitHub**
+5. **Activar Cloud Functions (necesario para la pestaña "Asesor")**
+   - En Firebase Console → "Uso y facturación" (ícono de engrane) → cambia del plan **Spark** al plan **Blaze**. Google pide una tarjeta, pero el uso de esta app se queda dentro de la capa gratuita de Functions — solo pagas centavos por las llamadas reales a la API de Claude.
+   - Instala Firebase CLI y autentícate una sola vez desde tu computadora:
+     ```
+     npx firebase-tools login
+     ```
+   - Guarda tu API key de Anthropic como secret de Functions (te va a pedir pegarla, hazlo ahí y no en ningún otro lado):
+     ```
+     npx firebase-tools functions:secrets:set ANTHROPIC_API_KEY --project <tu-project-id>
+     ```
+   - Haz el primer deploy de Functions manualmente (esto habilita las APIs de Google Cloud necesarias — Cloud Build, Artifact Registry, Eventarc — que la primera vez piden confirmación interactiva):
+     ```
+     npx firebase-tools deploy --only functions --project <tu-project-id>
+     ```
+   - Después de este primer deploy manual, los deploys automáticos vía GitHub Actions ya funcionan solos.
+
+6. **Conectar el repo de GitHub**
    - Crea el repo (puede ser privado) y súbelo (te aviso antes de hacer el push).
    - En GitHub → Settings → Secrets and variables → Actions, agrega estos secrets:
      - `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID` (los mismos valores de tu `.env`).

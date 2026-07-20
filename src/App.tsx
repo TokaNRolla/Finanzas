@@ -7,6 +7,7 @@ import Cards from './pages/Cards'
 import Expenses from './pages/Expenses'
 import FixedPayments from './pages/FixedPayments'
 import Insights from './pages/Insights'
+import Advisor from './pages/Advisor'
 
 function AppShell() {
   return (
@@ -19,6 +20,7 @@ function AppShell() {
             <Route path="/gastos" element={<Expenses />} />
             <Route path="/pagos-fijos" element={<FixedPayments />} />
             <Route path="/insights" element={<Insights />} />
+            <Route path="/asesor" element={<Advisor />} />
           </Routes>
         </main>
         <NavBar />
