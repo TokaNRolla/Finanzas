@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom'
-import { useAuth } from '../lib/AuthContext'
 
 const tabs = [
   { to: '/', label: 'Resumen', icon: '🏠' },
@@ -7,11 +6,11 @@ const tabs = [
   { to: '/gastos', label: 'Gastos', icon: '🧾' },
   { to: '/pagos-fijos', label: 'Fijos', icon: '📌' },
   { to: '/insights', label: 'Análisis', icon: '🧠' },
+  { to: '/asesor', label: 'Asesor', icon: '💬' },
+  { to: '/ajustes', label: 'Ajustes', icon: '⚙️' },
 ]
 
 export default function NavBar() {
-  const { logout } = useAuth()
-
   return (
     <nav className="nav-bar">
       {tabs.map((tab) => (
@@ -20,10 +19,6 @@ export default function NavBar() {
           <span>{tab.label}</span>
         </NavLink>
       ))}
-      <button className="nav-item logout" onClick={() => logout()}>
-        <span className="nav-icon">🚪</span>
-        <span>Salir</span>
-      </button>
     </nav>
   )
 }

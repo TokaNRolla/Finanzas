@@ -27,4 +27,3 @@ jobs:
         run: npm run daily-insight
         env:
           FIREBASE_SERVICE_ACCOUNT_PATH: /tmp/firebase-service-account.json
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

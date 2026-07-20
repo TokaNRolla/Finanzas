@@ -7,6 +7,8 @@ import Cards from './pages/Cards'
 import Expenses from './pages/Expenses'
 import FixedPayments from './pages/FixedPayments'
 import Insights from './pages/Insights'
+import Advisor from './pages/Advisor'
+import Settings from './pages/Settings'
 
 function AppShell() {
   return (
@@ -19,6 +21,8 @@ function AppShell() {
             <Route path="/gastos" element={<Expenses />} />
             <Route path="/pagos-fijos" element={<FixedPayments />} />
             <Route path="/insights" element={<Insights />} />
+            <Route path="/asesor" element={<Advisor />} />
+            <Route path="/ajustes" element={<Settings />} />
           </Routes>
         </main>
         <NavBar />

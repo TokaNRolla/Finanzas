@@ -6,16 +6,14 @@ import { getFirestore, Timestamp } from 'firebase-admin/firestore'
 import Anthropic from '@anthropic-ai/sdk'
 
 const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH
-const anthropicApiKey = process.env.ANTHROPIC_API_KEY
-if (!serviceAccountPath || !anthropicApiKey) {
-  console.error('Faltan FIREBASE_SERVICE_ACCOUNT_PATH y/o ANTHROPIC_API_KEY.')
+if (!serviceAccountPath) {
+  console.error('Falta FIREBASE_SERVICE_ACCOUNT_PATH.')
   process.exit(1)
 }
 
 const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf-8'))
 initializeApp({ credential: cert(serviceAccount) })
 const db = getFirestore()
-const anthropic = new Anthropic({ apiKey: anthropicApiKey })
 
 const today = new Date().toISOString().slice(0, 10)
 
@@ -86,6 +84,14 @@ const insightTool = {
 }
 
 async function run() {
+  const settingsDoc = await db.collection('settings').doc('anthropic').get()
+  const apiKey = settingsDoc.data()?.apiKey
+  if (!apiKey) {
+    console.error('No hay una API key de Anthropic guardada. Ve a Ajustes en la app y guarda una.')
+    process.exit(1)
+  }
+  const anthropic = new Anthropic({ apiKey })
+
   const state = await loadState()
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-5',

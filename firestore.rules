@@ -1,12 +1,11 @@
 rules_version = '2';
 
-// App de un solo usuario: solo tú puedes crear cuentas (no hay registro público
-// dentro de la app), así que cualquier request autenticado es válido.
+// App de un solo usuario. Cambia el correo si usas una cuenta distinta.
 // Los scripts de seed / análisis diario usan el Admin SDK y no pasan por estas reglas.
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null && request.auth.token.email == 'javier.villalba.89@gmail.com';
     }
   }
 }
